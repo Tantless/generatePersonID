@@ -1,1 +1,3 @@
-newProj
+Python 3.13
+python id_generator_gui.py to use GUI
+result will save in /log/todaydate.txt
