@@ -73,7 +73,7 @@ def summon_randChineseName(gender: int = 0) -> str:
 def summon_newPerson(flag:int) -> tuple:
     # 保存到当前目录下的log子目录
     personID = summon_randPersonID(flag)
-    personName = summon_randChineseName(2-personID%2)
+    personName = summon_randChineseName(2-personID[-2]%2)
     
     today = datetime.now().strftime("%Y%m%d")
     log_dir = os.path.join(os.path.dirname(__file__), "log")
@@ -86,5 +86,6 @@ def summon_newPerson(flag:int) -> tuple:
     
     return (personID,personName)
     
+
 
 
