@@ -1,3 +1,6 @@
 Python 3.13
 run "python id_genetor_gui.py" to use
 result will be saved in /log/todaydate.txt
+
+pip install pyqt5
+pip install numpy
