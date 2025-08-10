@@ -25,26 +25,32 @@ def summon_randDate7_14()->str:
     
     return random_date.strftime("%Y%m%d")
 
-def summon_rand1_6()->str:
+def generate_area_code()->str:
+    """生成地区编码（身份证前6位）"""
     random_key = np.random.choice(list(PROVINCES.keys()))
     random_proID = PROVINCES[random_key]
     return random_proID+'0101'
 
-def summon_rand15_17(flag:int)->str:
-    if flag == 1:
-        rand_sexID = np.random.randint(0,4)*2+1
-    elif flag ==2:
-        rand_sexID = np.random.randint(1,4)*2
+def generate_sequence_code(gender:int)->str:
+    """生成顺序码（身份证15-17位）
+    :param gender: 0随机, 1男, 2女
+    """
+    if gender == 1:
+        rand_sexID = np.random.randint(0,4)*2+1  # 男性为奇数
+    elif gender == 2:
+        rand_sexID = np.random.randint(1,4)*2    # 女性为偶数
     else:
         rand_sexID = np.random.randint(1,10)
     rand_front = np.random.randint(0,100)
     rand_front = "{:02d}".format(rand_front)
     return rand_front+str(rand_sexID)
 
-
-def summon_randPersonID(flag:int)->str:
+def summon_randPersonID(gender:int)->str:
+    """生成随机身份证号
+    :param gender: 0随机, 1男, 2女
+    """
     newPersonID = ""
-    newPersonID += summon_rand1_6()+summon_randDate7_14()+summon_rand15_17(flag)
+    newPersonID += generate_area_code()+summon_randDate7_14()+generate_sequence_code(gender)
     newPersonID += cal_lastNum18(newPersonID)
     return newPersonID
 
@@ -70,23 +76,26 @@ def summon_randChineseName(gender: int = 0) -> str:
             name = ''.join(np.random.choice(FEMALE_NAMES, size=np.random.randint(1, 3)))
             return f"{surname}{name}"
 
-def summon_newPerson(flag:int) -> tuple:
-    # 保存到当前目录下的log子目录
-    personID = summon_randPersonID(flag)
-    personName = summon_randChineseName(2-int(personID[-2])%2)
+def summon_newPerson(gender:int) -> tuple:
+    """生成新的身份证号和姓名，并保存到日志
+    :param gender: 0随机, 1男, 2女
+    :return: (身份证号, 姓名)
+    """
+    personID = summon_randPersonID(gender)
+    personName = summon_randChineseName(gender)
     
     today = datetime.now().strftime("%Y%m%d")
     log_dir = os.path.join(os.path.dirname(__file__), "log")
     os.makedirs(log_dir, exist_ok=True)  # 确保log目录存在
     filename = os.path.join(log_dir, f"{today}.txt")
     
-    # 写入文件
-    with open(filename, 'a+', encoding='utf-8') as f:
-        f.write(personID+' '+personName + '\n')
+    # 写入文件，增加错误处理
+    try:
+        with open(filename, 'a+', encoding='utf-8') as f:
+            f.write(personID+' '+personName + '\n')
+    except IOError as e:
+        print(f"无法写入日志文件: {e}")
     
-    return (personID,personName)
-    
-
-
+    return (personID, personName)
 
 
