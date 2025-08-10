@@ -155,19 +155,11 @@ class IDGeneratorApp(QMainWindow):
         
         right_layout.addLayout(log_control_layout)
         
-        # 日志显示与编辑
+        # 日志显示（只读）
         self.log_display = QTextEdit()
-        self.log_display.setReadOnly(False)
+        self.log_display.setReadOnly(True)
         self.log_display.setMinimumHeight(300)
         right_layout.addWidget(self.log_display)
-        
-        # 保存按钮
-        save_layout = QHBoxLayout()
-        save_layout.addStretch(1)
-        self.save_btn = QPushButton("保存修改")
-        self.save_btn.clicked.connect(self.save_log)
-        save_layout.addWidget(self.save_btn)
-        right_layout.addLayout(save_layout)
         
         # 添加到分割器
         splitter.addWidget(left_panel)
@@ -455,20 +447,6 @@ class IDGeneratorApp(QMainWindow):
             self.log_display.clear()
             self.statusBar.showMessage("未找到日志文件", 2000)
     
-    def save_log(self):
-        log_path = self.get_log_path()
-        if not log_path:
-            self.statusBar.showMessage("没有选择日志文件，无法保存", 3000)
-            return
-            
-        try:
-            with open(log_path, 'w', encoding='utf-8') as f:
-                f.write(self.log_display.toPlainText())
-            self.statusBar.showMessage(f"已保存日志: {self.log_selector.currentText()}", 3000)
-        except Exception as e:
-            self.statusBar.showMessage(f"保存日志失败: {str(e)}", 3000)
-            QMessageBox.critical(self, "错误", f"保存日志时发生错误：{str(e)}")
-
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = IDGeneratorApp()
